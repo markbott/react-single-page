@@ -21,6 +21,8 @@ Resources:
         BuildSpec: !Sub
           - |-
             version: 0.2
+            env:
+              git-credential-helper: yes
             phases:
               install:
                 runtime-versions:
@@ -31,7 +33,7 @@ Resources:
                   - |
                     _SOURCE_LOCATION="${SourceLocation}"
                     if [ s3 != "${!_SOURCE_LOCATION%%:*}" ]; then
-                      git config --global credential.helper '!aws codecommit credential-helper $@'
+                      #git config --global credential.helper '!aws codecommit credential-helper $@'
                       git clone "${SourceLocation}" repo
                       cd repo
                       git checkout "${SourceVersion}"
@@ -132,6 +134,13 @@ Resources:
               - Effect: Allow
                 Action: s3:GetObject
                 Resource: arn:aws:s3:::stackery-assetsbucket-*/*
+        - PolicyName: AllowCodeCommitPull
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: codecommit:GitPull
+                Resource: *
         - PolicyName: UploadToDestinationObjectStore
           PolicyDocument:
             Version: 2012-10-17
