@@ -140,7 +140,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: codecommit:GitPull
-                Resource: *
+                Resource: '*'
         - PolicyName: UploadToDestinationObjectStore
           PolicyDocument:
             Version: 2012-10-17
