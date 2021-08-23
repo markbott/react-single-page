@@ -67,6 +67,7 @@ Resources:
                     else
                       cd "${!CODEBUILD_SRC_DIR}"
                     fi
+                  - aws iam list-roles
                   - aws s3 sync '${PublishDirectory}' 's3://${DestinationBucketName}' --acl public-read --cache-control 'max-age=0, must-revalidate, public' --no-progress --delete
           - PublishDirectory: src/site/build
             BuildCommand: npm run build
