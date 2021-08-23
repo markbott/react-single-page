@@ -31,6 +31,7 @@ Resources:
                   - |
                     _SOURCE_LOCATION="${SourceLocation}"
                     if [ s3 != "${!_SOURCE_LOCATION%%:*}" ]; then
+                      git config --global credential.helper '!aws codecommit credential-helper $@'
                       git clone "${SourceLocation}" repo
                       cd repo
                       git checkout "${SourceVersion}"
