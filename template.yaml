@@ -71,7 +71,7 @@ Resources:
           - PublishDirectory: src/site/build
             BuildCommand: npm run build
             SourceDirectory: src/site
-            DestinationBucketName: !Ref FrontEnd
+            DestinationBucketName: !Ref FrontEnd2
       Tags:
         - Key: Stackery Project Type
           Value: Website Builder
@@ -154,8 +154,8 @@ Resources:
                   - s3:PutObject
                   - s3:PutObjectAcl
                 Resource:
-                  - !Sub ${FrontEnd.Arn}/*
-                  - !Sub ${FrontEnd.Arn}
+                  - !Sub ${FrontEnd2.Arn}/*
+                  - !Sub ${FrontEnd2.Arn}
   WebsiteBuildTrigger:
     Type: Custom::StackeryWebsiteBuildTrigger
     DependsOn: WebsiteEvents
@@ -164,10 +164,6 @@ Resources:
       Type: website
       ProjectName: !Ref Website
       SourceVersion: !Ref SourceVersion
-  FrontEnd:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-frontend-${AWS::AccountId}
   Cdn:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -184,7 +180,7 @@ Resources:
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
         Origins:
-          - DomainName: !GetAtt FrontEnd.DomainName
+          - DomainName: !GetAtt FrontEnd2.DomainName
             Id: StackeryCDN
             S3OriginConfig:
               OriginAccessIdentity: !Sub
@@ -198,7 +194,7 @@ Resources:
   CdnBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref FrontEnd
+      Bucket: !Ref FrontEnd2
       PolicyDocument:
         Statement:
           - Effect: Allow
@@ -207,7 +203,11 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub
               - ${BucketArn}/*
-              - BucketArn: !GetAtt FrontEnd.Arn
+              - BucketArn: !GetAtt FrontEnd2.Arn
+  FrontEnd2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-frontend2-${AWS::AccountId}
 Parameters:
   SourceLocation:
     Type: String
